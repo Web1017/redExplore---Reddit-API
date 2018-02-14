@@ -69,112 +69,76 @@ require = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({3:[function(require,module,exports) {
-"use strict";
+})({11:[function(require,module,exports) {
+var bundleURL = null;
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    search: function (searchTerm, searchLimit, sortBy) {
-        return fetch(`http://www.reddit.com/search.json?q=${searchTerm}&sort=${sortBy}&limit=${searchLimit}`).then(res => res.json()).then(data => data.data.children.map(data => data.data)).catch(err => console.log(err)); //catch errors
-    }
-
-};
-},{}],2:[function(require,module,exports) {
-'use strict';
-
-var _redditapi = require('./redditapi');
-
-var _redditapi2 = _interopRequireDefault(_redditapi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const searchForm = document.getElementById('search-form');
-const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('search-btn');
-
-//Form Event Listener
-searchForm.addEventListener('submit', e => {
-    //Get Search Term
-    const searchTerm = searchInput.value;
-
-    //Get sort
-    const sortBy = document.querySelector('input[name="sortby"]:checked').value;
-    //Get Limit
-    const searchLimit = document.getElementById('limit').value;
-
-    //Check input
-    if (searchTerm === '') {
-
-        //Show message
-        showMessage('Please add a search Term', 'alert-danger');
-    }
-
-    //Clear Input
-    searchInput.value = '';
-
-    //Search Reddit
-    _redditapi2.default.search(searchTerm, searchLimit, sortBy).then(results => {
-        let output = '<div class ="card-columns">';
-        //Loop through posts
-        results.forEach(post => {
-            // Check for image
-            let image = post.preview ? post.preview.images[0].source.url : 'https://cdn.comparitech.com/wp-content/uploads/2017/08/reddit-1.jpg';
-            output += `
-    <div class="card mb-2">
-    <img class="card-img-top" src="${image}" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">${post.title}</h5>
-      <p class="card-text">${truncateString(post.selftext, 100)}</p>
-      <a href="${post.url}" target="_blank
-      " class="btn btn-primary">Read More</a>
-      <hr>
-      <span class="badge badge-secondary">Subreddit: ${post.subreddit}</span> 
-      <span class="badge badge-dark">Score: ${post.score}</span>
-    </div>
-  </div>
-    `;
-        });
-        output += '</div>';
-        document.getElementById('results').innerHTML = output;
-    });
-    e.preventDefault();
-});
-
-//Show Message
-function showMessage(message, className) {
-    //Create div
-    const div = document.createElement('div');
-
-    //Add classes
-    div.className = `alert ${className}`;
-
-    //Add Text
-    div.appendChild(document.createTextNode(message));
-
-    //Get parent 
-    const searchContainer = document.getElementById('search-container');
-
-    //Get Search
-    const search = document.getElementById('search');
-
-    //Insert the message
-    searchContainer.insertBefore(div, search);
-
-    //Timeout alert after 3 sec
-    setTimeout(function () {
-        document.querySelector('.alert').remove();
-    }, 3000);
+  return bundleURL;
 }
 
-// Truncate String Function
-function truncateString(myString, limit) {
-    const shortened = myString.indexOf(' ', limit);
-    if (shortened == -1) return myString;
-    return myString.substring(0, shortened);
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error;
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
 }
-},{"./redditapi":3}],16:[function(require,module,exports) {
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+
+},{}],10:[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+  newLink.onload = function () {
+    link.remove();
+  };
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+
+},{"./bundle-url":11}],9:[function(require,module,exports) {
+
+        var reloadCSS = require('_css_loader');
+        module.hot.dispose(reloadCSS);
+        module.hot.accept(reloadCSS);
+      
+},{"_css_loader":10}],15:[function(require,module,exports) {
 
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
@@ -295,5 +259,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.require, id);
   });
 }
-},{}]},{},[16,2])
-//# sourceMappingURL=/dist/redexplore.map
+},{}]},{},[15])
+//# sourceMappingURL=/dist/1c82bad4b026ead30841da4c377ebb4e.map
