@@ -69,9 +69,80 @@ require = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({4:[function(require,module,exports) {
+})({10:[function(require,module,exports) {
+"use strict";
 
-},{}],6:[function(require,module,exports) {
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+exports.default = {
+   search: function (searchTerm, searchLimit, sortBy) {
+      fetch(`http://www.reddit.com/search.json?q=${searchTerm}`).then(res => res.json());
+   }
+};
+},{}],4:[function(require,module,exports) {
+'use strict';
+
+var _redditapi = require('./redditapi');
+
+var _redditapi2 = _interopRequireDefault(_redditapi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const searchForm = document.getElementById('search-form');
+const searchInput = document.getElementById('search-input');
+
+//Form Event Listener
+searchForm.addEventListener('submit', e => {
+    //Get Search Term
+    const searchTerm = searchInput.value;
+
+    //Get sort
+    const sortBy = document.querySelector('input[name="sortby"]:checked').value;
+    //Get Limit
+    const searchLimit = document.getElementById('limit').value;
+
+    //Check input
+    if (searchTerm === '') {
+        //Show message
+        showMessage('Please add a search Term', 'alert-danger');
+    }
+
+    //Clear Input
+    searchInput.value = '';
+
+    //Search Reddit
+    _redditapi2.default.search(searchTerm, searchLimit, sortBy);
+
+    e.preventDefault();
+});
+
+//Show Message
+function showMessage(message, className) {
+    //Create div
+    const div = document.createElement('div');
+
+    //Add classes
+    div.className = `alert ${className}`;
+
+    //Add Text
+    div.appendChild(document.createTextNode(message));
+
+    //Get parent 
+    const searchContainer = document.getElementById('search-container');
+
+    //Get Search
+    const search = document.getElementById('search');
+
+    //Insert the message
+    searchContainer.insertBefore(div, search);
+
+    //Timeout alert after 3 sec
+    setTimeout(function () {
+        document.querySelector('.alert').remove();
+    }, 3000);
+}
+},{"./redditapi":10}],6:[function(require,module,exports) {
 
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
@@ -91,7 +162,7 @@ module.bundle.Module = Module;
 
 if (!module.bundle.parent && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
-  var ws = new WebSocket('ws://' + hostname + ':' + '21351' + '/');
+  var ws = new WebSocket('ws://' + hostname + ':' + '23018' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
