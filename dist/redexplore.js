@@ -174,7 +174,7 @@ function truncateString(myString, limit) {
     if (shortened == -1) return myString;
     return myString.substring(0, shortened);
 }
-},{"./redditapi":3}],16:[function(require,module,exports) {
+},{"./redditapi":3}],4:[function(require,module,exports) {
 
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
@@ -194,7 +194,7 @@ module.bundle.Module = Module;
 
 if (!module.bundle.parent && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
-  var ws = new WebSocket('ws://' + hostname + ':' + '4815' + '/');
+  var ws = new WebSocket('ws://' + hostname + ':' + '15576' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -295,5 +295,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.require, id);
   });
 }
-},{}]},{},[16,2])
+},{}]},{},[4,2])
 //# sourceMappingURL=/dist/redexplore.map
